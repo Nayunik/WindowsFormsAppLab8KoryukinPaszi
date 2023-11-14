@@ -10,11 +10,17 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Globalization;
+using System.Security.Cryptography;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        public readonly int CountOpen = 3;
+        public readonly int numberToEncryptFirstTime = 1;
+        private const string CounterFilePath = "counter.txt";
+        private const string Key = "0123456789ABCDEF0123456789ABCDEF";
+
         public Form1()
         {
             InitializeComponent();
@@ -110,5 +116,121 @@ namespace WindowsFormsApp1
         {
             
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (CheckLaunchLimit())
+            {
+               MessageBox.Show("Превышено количество разрешенных запусков.");
+                Application.Exit();
+            }
+            else
+            {
+                MessageBox.Show("Программа запускается.");
+                IncrementLaunchCounter();
+            }
+
+
+        }
+
+
+        static bool CheckLaunchLimit()
+        {
+            int launchLimit = 5; // Установите нужное количество разрешенных запусков
+
+            // Проверяем наличие файла счетчика
+            if (!File.Exists(CounterFilePath))
+            {
+                // Если файла нет, создаем и записываем в него зашифрованный счетчик со значением 1
+                string initialCounterValue = EncryptString("1", Key);
+                File.Create(CounterFilePath).Close();
+                File.WriteAllText(CounterFilePath, initialCounterValue);
+
+                return false;
+            }
+
+            // Читаем зашифрованный счетчик из файла
+            string encryptedCounter = File.ReadAllText(CounterFilePath);
+
+            // Расшифровываем счетчик
+            string decryptedCounter = DecryptString(encryptedCounter, Key);
+
+            // Пытаемся преобразовать расшифрованный счетчик в число
+            if (int.TryParse(decryptedCounter, out int launchCount))
+            {
+                // Если количество запусков превышено, возвращаем true
+                return launchCount >= launchLimit;
+            }
+
+            // Если произошла ошибка при преобразовании, возвращаем false
+            return false;
+        }
+
+        static void IncrementLaunchCounter()
+        {
+            // Читаем зашифрованный счетчик из файла
+            string encryptedCounter = File.ReadAllText(CounterFilePath);
+
+            // Расшифровываем счетчик
+            string decryptedCounter = DecryptString(encryptedCounter, Key);
+
+            // Пытаемся преобразовать расшифрованный счетчик в число
+            if (int.TryParse(decryptedCounter, out int launchCount))
+            {
+                // Инкрементируем счетчик
+                launchCount++;
+
+                // Шифруем и сохраняем обновленный счетчик в файл
+                string encryptedUpdatedCounter = EncryptString(launchCount.ToString(), Key);
+                File.WriteAllText(CounterFilePath, encryptedUpdatedCounter);
+            }
+        }
+
+        static string EncryptString(string input, string key)
+        {
+            using (AesManaged aesAlg = new AesManaged())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                aesAlg.IV = new byte[aesAlg.BlockSize / 8];
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(input);
+                        }
+                    }
+
+                    return Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+        }
+
+        static string DecryptString(string cipherText, string key)
+        {
+            using (AesManaged aesAlg = new AesManaged())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                aesAlg.IV = new byte[aesAlg.BlockSize / 8];
+
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
+            
     }
 }
