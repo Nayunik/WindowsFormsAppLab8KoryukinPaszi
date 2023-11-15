@@ -33,8 +33,6 @@ namespace WindowsFormsApp1
         private void button1_Click(object sender, EventArgs e)
         {
             textBox1.Text = "Имя файла";
-            
-           
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 textBox1.Text = openFileDialog1.FileName;
@@ -78,8 +76,6 @@ namespace WindowsFormsApp1
 
                 try
                 {
-                    
-
                     // Получаем информацию о правах доступа к файлу
                     FileSecurity fileSecurity = fileInfo.GetAccessControl();
 
@@ -133,46 +129,35 @@ namespace WindowsFormsApp1
                         if (File.Exists(filePath))
                         {
                             // Создаем новый объект FileInfo с тем же путем
-                            // и изменяем дату создания в этом объекте
+                            // и изменяем даты в этом объекте
                             FileInfo newFileInfo = new FileInfo(filePath)
                             {
                                 Attributes = 0,
                                 CreationTime = newDateTime,
                                 LastWriteTime = newDateTimeWrite,
                                 LastAccessTime = newDateTimeAccess,
-                                
-                               
                             };
-
-                            // FileAttributes attributes = File.GetAttributes(filePath);
-
-                            
 
                             for (int i = 0; i < checkedListBox2.Items.Count; i++)
                             {
 
                                 // Изменение атрибутов в соответствии с флажками в CheckedListBox
-                               
-
                                 if (checkedListBox2.GetItemChecked(i) && checkedListBox2.Items[i].ToString() == "Hidden")
                                 {
                                     // Установка атрибута Hidden
                                     newFileInfo.Attributes |= FileAttributes.Hidden;
-
                                 }
 
                                 if (checkedListBox2.GetItemChecked(i) && checkedListBox2.Items[i].ToString() == "Normal")
                                 {
                                     // Установка атрибута Hidden
                                     newFileInfo.Attributes |= FileAttributes.Normal;
-
                                 }
 
                                 if (checkedListBox2.GetItemChecked(i) && checkedListBox2.Items[i].ToString() == "ReadOnly")
                                 {
                                     // Установка атрибута Hidden
                                     newFileInfo.Attributes |= FileAttributes.ReadOnly;
-
                                 }
                             }
 
@@ -308,24 +293,14 @@ namespace WindowsFormsApp1
                             LastWriteTime = fileInfo.CreationTime,
                             LastAccessTime  = fileInfo.CreationTime
                         };
-
-                        // Заменяем существующий файл новым файлом с обновленной датой создания
-                        //newFileInfo.Replace(filePath, null, true);
-
-                        
                     }
-                    
                 }
                 catch (Exception ex)
                 {
 
                 }
-
             }
-
-
         }
-
 
         static bool CheckLaunchLimit()
         {
