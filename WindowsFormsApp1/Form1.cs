@@ -109,24 +109,6 @@ namespace WindowsFormsApp1
 
         }
 
-        private string GetAccessLevel(FileSystemRights rights)
-        {
-            // Метод, который преобразует значение FileSystemRights в соответствующую строку доступа
-            switch (rights)
-            {
-                case FileSystemRights.FullControl:
-                    return "Полный доступ";
-                case FileSystemRights.Modify:
-                    return "Изменение";
-                case FileSystemRights.ReadAndExecute:
-                    return "Чтение и выполнение";
-                case FileSystemRights.Read:
-                    return "Чтение";
-                default:
-                    throw new ArgumentException("Недопустимый уровень доступа");
-            }
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             string pattern = @"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4} (0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$";
@@ -150,15 +132,6 @@ namespace WindowsFormsApp1
                     {
                         if (File.Exists(filePath))
                         {
-                            // Закрываем все открытые ресурсы файла
-                           /* using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
-                            {
-                                fs.Close();
-                            }*/
-
-                            // Получаем текущую информацию о файле
-                           //FileInfo fileInfo = new FileInfo(filePath);
-
                             // Создаем новый объект FileInfo с тем же путем
                             // и изменяем дату создания в этом объекте
                             FileInfo newFileInfo = new FileInfo(filePath)
@@ -203,40 +176,19 @@ namespace WindowsFormsApp1
                                 }
                             }
 
-                            FileSecurity fileSecurity = newFileInfo.GetAccessControl();
+                            // Очищаем все права на файл для текущего пользователя
+                            FileSecurity fileSecurity = newFileInfo.GetAccessControl(); 
+                            fileSecurity.PurgeAccessRules(new SecurityIdentifier(WindowsIdentity.GetCurrent().User.Value));
+                            File.SetAccessControl(filePath, fileSecurity);
 
+                            // Получаем выбранные права из CheckedListBox
+                            FileSystemRights selectedRights = GetSelectedRights(checkedListBox1);
 
-                            // Очистка текущих прав доступа
-                            AuthorizationRuleCollection rules = fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
-                            foreach (AuthorizationRule rule in rules)
-                            {
-                                if (rule is FileSystemAccessRule fileRule)
-                                {
-                                    fileSecurity.RemoveAccessRule(fileRule);
-                                }
-                            }
+                            // Назначаем выбранные права на файл
+                            SetFilePermissions(filePath, selectedRights);
 
-
-                            // Установка новых прав доступа на основе выбранных значений в CheckedListBox
-                            for (int i = 0; i < checkedListBox1.Items.Count; i++)
-                            {
-                                if (checkedListBox1.GetItemChecked(i))
-                                {
-                                    string accessLevel = checkedListBox1.Items[i].ToString();
-                                    FileSystemRights rights = GetFileSystemRights(accessLevel);
-
-                                    // Устанавливаем новые права доступа для "Everyone"
-                                    fileSecurity.AddAccessRule(new FileSystemAccessRule("Everyone", rights, AccessControlType.Allow));
-                                }
-                            }
-
-                            // Применение новых прав доступа к файлу
-                            newFileInfo.SetAccessControl(fileSecurity);
-
-                            // Заменяем существующий файл новым файлом с обновленной датой создания
-                            //newFileInfo.Replace(filePath, null, true);
-
-                            MessageBox.Show($"Дата создания изменена на: {newFileInfo.CreationTime}");
+                            
+                            MessageBox.Show($"Свойства файла успешно изменены!");
 
 
                         }
@@ -247,7 +199,7 @@ namespace WindowsFormsApp1
                     }
                     catch (Exception ex)
                     {
-                        
+                        MessageBox.Show(ex.Message);
                     }
                 }
                 else
@@ -259,6 +211,42 @@ namespace WindowsFormsApp1
                 
 
             }
+        }
+
+        static FileSystemRights GetSelectedRights(CheckedListBox checkedListBox)
+        {
+            FileSystemRights selectedRights = 0;
+
+            foreach (var item in checkedListBox.CheckedItems)
+            {
+                switch (item.ToString())
+                {
+                    case "Полный доступ":
+                        selectedRights |= FileSystemRights.FullControl;
+                        break;
+                    case "Изменение":
+                        selectedRights |= FileSystemRights.Modify;
+                        break;
+                    case "Чтение и выполнение":
+                        selectedRights |= FileSystemRights.ReadAndExecute;
+                        break;
+                    case "Чтение":
+                        selectedRights |= FileSystemRights.Read;
+                        break;
+                    case "Запись":
+                        selectedRights |= FileSystemRights.Write;
+                        break;
+                }
+            }
+
+            return selectedRights;
+        }
+
+        static void SetFilePermissions(string filePath, FileSystemRights selectedRights)
+        {
+            FileSecurity fileSecurity = new FileSecurity(filePath, AccessControlSections.All);
+            fileSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WindowsIdentity.GetCurrent().User.Value), selectedRights, AccessControlType.Allow));
+            File.SetAccessControl(filePath, fileSecurity);
         }
 
         private FileSystemRights GetFileSystemRights(string accessLevel)
