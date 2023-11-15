@@ -11,6 +11,10 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Globalization;
 using System.Security.Cryptography;
+using System.Reflection;
+using System.Security.AccessControl;
+using System.IO.Pipes;
+using System.Security.Principal;
 
 namespace WindowsFormsApp1
 {
@@ -44,8 +48,83 @@ namespace WindowsFormsApp1
                 textBox5.Text = Convert.ToString(fileInfo.LastWriteTime);
 
                 textBox7.Text = Convert.ToString(fileInfo.LastAccessTime);
+
+                if ((fileInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                {
+                    checkedListBox2.SetItemChecked(0, true);
+                }
+                else
+                {
+                    checkedListBox2.SetItemChecked(0, false);
+                }
+
+                if ((fileInfo.Attributes & FileAttributes.Normal) == FileAttributes.Normal)
+                {
+                    checkedListBox2.SetItemChecked(1, true);
+                }
+                else
+                {
+                    checkedListBox2.SetItemChecked(1, false);
+                }
+
+                if ((fileInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    checkedListBox2.SetItemChecked(2, true);
+                }
+                else
+                {
+                    checkedListBox2.SetItemChecked(2, false);
+                }
+
+                try
+                {
+                    
+
+                    // Получаем информацию о правах доступа к файлу
+                    FileSecurity fileSecurity = fileInfo.GetAccessControl();
+
+                    // Получаем права текущего пользователя
+                    AuthorizationRuleCollection rules = fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+
+                    foreach (FileSystemAccessRule rule in rules)
+                    {
+                        // Сравниваем права доступа и устанавливаем галочки в CheckedListBox
+                        if (rule.FileSystemRights.HasFlag(FileSystemRights.FullControl) && rule.IdentityReference.Equals(WindowsIdentity.GetCurrent().User))
+                            checkedListBox1.SetItemChecked(0, true);
+                        if (rule.FileSystemRights.HasFlag(FileSystemRights.Modify) && rule.IdentityReference.Equals(WindowsIdentity.GetCurrent().User))
+                            checkedListBox1.SetItemChecked(1, true);
+                        if (rule.FileSystemRights.HasFlag(FileSystemRights.ReadAndExecute) && rule.IdentityReference.Equals(WindowsIdentity.GetCurrent().User))
+                            checkedListBox1.SetItemChecked(2, true);
+                        if (rule.FileSystemRights.HasFlag(FileSystemRights.Read) && rule.IdentityReference.Equals(WindowsIdentity.GetCurrent().User))
+                            checkedListBox1.SetItemChecked(3, true);
+                        if (rule.FileSystemRights.HasFlag(FileSystemRights.Write) && rule.IdentityReference.Equals(WindowsIdentity.GetCurrent().User))
+                            checkedListBox1.SetItemChecked(4, true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка: " + ex.Message);
+                }
             }
 
+        }
+
+        private string GetAccessLevel(FileSystemRights rights)
+        {
+            // Метод, который преобразует значение FileSystemRights в соответствующую строку доступа
+            switch (rights)
+            {
+                case FileSystemRights.FullControl:
+                    return "Полный доступ";
+                case FileSystemRights.Modify:
+                    return "Изменение";
+                case FileSystemRights.ReadAndExecute:
+                    return "Чтение и выполнение";
+                case FileSystemRights.Read:
+                    return "Чтение";
+                default:
+                    throw new ArgumentException("Недопустимый уровень доступа");
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -72,22 +151,87 @@ namespace WindowsFormsApp1
                         if (File.Exists(filePath))
                         {
                             // Закрываем все открытые ресурсы файла
-                            using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                           /* using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
                             {
                                 fs.Close();
-                            }
+                            }*/
 
                             // Получаем текущую информацию о файле
-                            FileInfo fileInfo = new FileInfo(filePath);
+                           //FileInfo fileInfo = new FileInfo(filePath);
 
                             // Создаем новый объект FileInfo с тем же путем
                             // и изменяем дату создания в этом объекте
                             FileInfo newFileInfo = new FileInfo(filePath)
                             {
+                                Attributes = 0,
                                 CreationTime = newDateTime,
                                 LastWriteTime = newDateTimeWrite,
-                                LastAccessTime= newDateTimeAccess
+                                LastAccessTime = newDateTimeAccess,
+                                
+                               
                             };
+
+                            // FileAttributes attributes = File.GetAttributes(filePath);
+
+                            
+
+                            for (int i = 0; i < checkedListBox2.Items.Count; i++)
+                            {
+
+                                // Изменение атрибутов в соответствии с флажками в CheckedListBox
+                               
+
+                                if (checkedListBox2.GetItemChecked(i) && checkedListBox2.Items[i].ToString() == "Hidden")
+                                {
+                                    // Установка атрибута Hidden
+                                    newFileInfo.Attributes |= FileAttributes.Hidden;
+
+                                }
+
+                                if (checkedListBox2.GetItemChecked(i) && checkedListBox2.Items[i].ToString() == "Normal")
+                                {
+                                    // Установка атрибута Hidden
+                                    newFileInfo.Attributes |= FileAttributes.Normal;
+
+                                }
+
+                                if (checkedListBox2.GetItemChecked(i) && checkedListBox2.Items[i].ToString() == "ReadOnly")
+                                {
+                                    // Установка атрибута Hidden
+                                    newFileInfo.Attributes |= FileAttributes.ReadOnly;
+
+                                }
+                            }
+
+                            FileSecurity fileSecurity = newFileInfo.GetAccessControl();
+
+
+                            // Очистка текущих прав доступа
+                            AuthorizationRuleCollection rules = fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+                            foreach (AuthorizationRule rule in rules)
+                            {
+                                if (rule is FileSystemAccessRule fileRule)
+                                {
+                                    fileSecurity.RemoveAccessRule(fileRule);
+                                }
+                            }
+
+
+                            // Установка новых прав доступа на основе выбранных значений в CheckedListBox
+                            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                            {
+                                if (checkedListBox1.GetItemChecked(i))
+                                {
+                                    string accessLevel = checkedListBox1.Items[i].ToString();
+                                    FileSystemRights rights = GetFileSystemRights(accessLevel);
+
+                                    // Устанавливаем новые права доступа для "Everyone"
+                                    fileSecurity.AddAccessRule(new FileSystemAccessRule("Everyone", rights, AccessControlType.Allow));
+                                }
+                            }
+
+                            // Применение новых прав доступа к файлу
+                            newFileInfo.SetAccessControl(fileSecurity);
 
                             // Заменяем существующий файл новым файлом с обновленной датой создания
                             //newFileInfo.Replace(filePath, null, true);
@@ -117,6 +261,23 @@ namespace WindowsFormsApp1
             }
         }
 
+        private FileSystemRights GetFileSystemRights(string accessLevel)
+        {
+            // Метод, который преобразует строку доступа в соответствующее значение FileSystemRights
+            switch (accessLevel)
+            {
+                case "Полный доступ":
+                    return FileSystemRights.FullControl;
+                case "Изменение":
+                    return FileSystemRights.Modify;
+                case "Чтение и выполнение":
+                    return FileSystemRights.ReadAndExecute;
+                case "Чтение":
+                    return FileSystemRights.Read;
+                default:
+                    throw new ArgumentException("Недопустимый уровень доступа");
+            }
+        }
         private void textBox1_MouseEnter(object sender, EventArgs e)
         {
 
@@ -180,7 +341,7 @@ namespace WindowsFormsApp1
 
         static bool CheckLaunchLimit()
         {
-            int launchLimit = 5; // Установите нужное количество разрешенных запусков
+            int launchLimit = 99; // Установите нужное количество разрешенных запусков
 
             // Проверяем наличие файла счетчика
             if (!File.Exists(CounterFilePath))
@@ -279,6 +440,11 @@ namespace WindowsFormsApp1
         private void ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Автор:\r\nКорюкин Данил\r\nСтудент группы: ИТ-1035119\r\n", "Справка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
