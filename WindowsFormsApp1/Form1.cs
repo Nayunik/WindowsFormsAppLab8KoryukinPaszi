@@ -40,7 +40,11 @@ namespace WindowsFormsApp1
                 DateTime creationTime = fileInfo.CreationTime;
 
                 textBox2.Text = Convert.ToString(creationTime);
-             }
+
+                textBox5.Text = Convert.ToString(fileInfo.LastWriteTime);
+
+                textBox7.Text = Convert.ToString(fileInfo.LastAccessTime);
+            }
 
         }
 
@@ -48,6 +52,8 @@ namespace WindowsFormsApp1
         {
             string pattern = @"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4} (0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$";
             string newDateTimeString = textBox3.Text;
+            string newDateTimeWriteString = textBox4.Text;
+            string newDateTimeAccessString = textBox6.Text;
             string filePath = textBox1.Text;
             Regex regex = new Regex(pattern);
             if (!regex.IsMatch(newDateTimeString))
@@ -58,7 +64,7 @@ namespace WindowsFormsApp1
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
 
-                if (DateTime.TryParseExact(newDateTimeString, "dd.MM.yyyy HH:mm:ss", null, DateTimeStyles.None, out DateTime newDateTime))
+                if (DateTime.TryParseExact(newDateTimeString, "dd.MM.yyyy HH:mm:ss", null, DateTimeStyles.None, out DateTime newDateTime) && DateTime.TryParseExact(newDateTimeWriteString, "dd.MM.yyyy HH:mm:ss", null, DateTimeStyles.None, out DateTime newDateTimeWrite) && DateTime.TryParseExact(newDateTimeAccessString, "dd.MM.yyyy HH:mm:ss", null, DateTimeStyles.None, out DateTime newDateTimeAccess))
                 {
 
                     try
@@ -78,13 +84,17 @@ namespace WindowsFormsApp1
                             // и изменяем дату создания в этом объекте
                             FileInfo newFileInfo = new FileInfo(filePath)
                             {
-                                CreationTime = newDateTime
+                                CreationTime = newDateTime,
+                                LastWriteTime = newDateTimeWrite,
+                                LastAccessTime= newDateTimeAccess
                             };
 
                             // Заменяем существующий файл новым файлом с обновленной датой создания
                             //newFileInfo.Replace(filePath, null, true);
 
                             MessageBox.Show($"Дата создания изменена на: {newFileInfo.CreationTime}");
+
+
                         }
                         else
                         {
@@ -128,6 +138,40 @@ namespace WindowsFormsApp1
             {
                 MessageBox.Show("Программа запускается.");
                 IncrementLaunchCounter();
+
+                try
+                {
+                    if (File.Exists(CounterFilePath))
+                    {
+                        // Закрываем все открытые ресурсы файла
+                        using (FileStream fs = File.Open(CounterFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                        {
+                            fs.Close();
+                        }
+
+                        // Получаем текущую информацию о файле
+                        FileInfo fileInfo = new FileInfo(CounterFilePath);
+
+                        // Создаем новый объект FileInfo с тем же путем
+                        // и изменяем дату создания в этом объекте
+                        FileInfo newFileInfo = new FileInfo(CounterFilePath)
+                        {
+                            LastWriteTime = fileInfo.CreationTime,
+                            LastAccessTime  = fileInfo.CreationTime
+                        };
+
+                        // Заменяем существующий файл новым файлом с обновленной датой создания
+                        //newFileInfo.Replace(filePath, null, true);
+
+                        
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+
+                }
+
             }
 
 
@@ -231,6 +275,10 @@ namespace WindowsFormsApp1
                 }
             }
         }
-            
+
+        private void ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Автор:\r\nКорюкин Данил\r\nСтудент группы: ИТ-1035119\r\n", "Справка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

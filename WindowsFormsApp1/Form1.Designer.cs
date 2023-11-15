@@ -34,6 +34,27 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -48,7 +69,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 53);
+            this.textBox1.Location = new System.Drawing.Point(3, 3);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(347, 20);
@@ -58,26 +79,26 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(12, 102);
+            this.textBox2.Location = new System.Drawing.Point(3, 3);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(347, 20);
             this.textBox2.TabIndex = 2;
-            this.textBox2.Text = "Дата и время файла (dd.mm.yyyy HH:MM)";
+            this.textBox2.Text = "Дата и время создания файла (dd.mm.yyyy HH:MM)";
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(12, 150);
+            this.textBox3.Location = new System.Drawing.Point(3, 43);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(347, 20);
             this.textBox3.TabIndex = 3;
-            this.textBox3.Text = "Новые дата и время файла (dd.mm.yyyy HH:MM:SS)";
+            this.textBox3.Text = "Новые дата и время создания файла (dd.mm.yyyy HH:MM:SS)";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(124, 176);
+            this.button2.Location = new System.Drawing.Point(115, 466);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(146, 23);
             this.button2.TabIndex = 4;
@@ -89,22 +110,167 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(383, 24);
+            this.menuStrip1.TabIndex = 5;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem
+            // 
+            this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem.Name = "ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem";
+            this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
+            this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem.Text = "О программе";
+            this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem.Click += new System.EventHandler(this.ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem_Click);
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(4, 43);
+            this.textBox4.Multiline = true;
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(347, 20);
+            this.textBox4.TabIndex = 7;
+            this.textBox4.Text = "Новые дата и время изменения файла (dd.mm.yyyy HH:MM:SS)";
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(4, 3);
+            this.textBox5.Multiline = true;
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(347, 20);
+            this.textBox5.TabIndex = 6;
+            this.textBox5.Text = "Дата и время изменения файла (dd.mm.yyyy HH:MM)";
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(3, 43);
+            this.textBox6.Multiline = true;
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(347, 20);
+            this.textBox6.TabIndex = 9;
+            this.textBox6.Text = "Новые дата и время открытия файла (dd.mm.yyyy HH:MM:SS)";
+            // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(3, 3);
+            this.textBox7.Multiline = true;
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(347, 20);
+            this.textBox7.TabIndex = 8;
+            this.textBox7.Text = "Дата и время открытия файла (dd.mm.yyyy HH:MM)";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Location = new System.Drawing.Point(12, 53);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(354, 26);
+            this.panel1.TabIndex = 10;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.textBox3);
+            this.panel2.Location = new System.Drawing.Point(12, 98);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(354, 66);
+            this.panel2.TabIndex = 11;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.textBox5);
+            this.panel3.Controls.Add(this.textBox4);
+            this.panel3.Location = new System.Drawing.Point(12, 182);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(354, 66);
+            this.panel3.TabIndex = 12;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.textBox7);
+            this.panel4.Controls.Add(this.textBox6);
+            this.panel4.Location = new System.Drawing.Point(12, 265);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(354, 66);
+            this.panel4.TabIndex = 12;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.checkedListBox1);
+            this.panel5.Location = new System.Drawing.Point(12, 337);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(354, 88);
+            this.panel5.TabIndex = 13;
+            // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.Items.AddRange(new object[] {
+            "Полный доступ",
+            "Изменение",
+            "Чтение и выполнение",
+            "Чтение ",
+            "Запись"});
+            this.checkedListBox1.Location = new System.Drawing.Point(102, 6);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.Size = new System.Drawing.Size(147, 79);
+            this.checkedListBox1.TabIndex = 0;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.textBox8);
+            this.panel6.Location = new System.Drawing.Point(12, 431);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(354, 29);
+            this.panel6.TabIndex = 13;
+            // 
+            // textBox8
+            // 
+            this.textBox8.Location = new System.Drawing.Point(3, 3);
+            this.textBox8.Multiline = true;
+            this.textBox8.Name = "textBox8";
+            this.textBox8.Size = new System.Drawing.Size(347, 20);
+            this.textBox8.TabIndex = 8;
+            this.textBox8.Text = "Атрибуты\r\n";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(371, 211);
+            this.ClientSize = new System.Drawing.Size(383, 497);
+            this.Controls.Add(this.panel6);
+            this.Controls.Add(this.panel5);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,6 +284,20 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem ьсяПодменюСправкаСКомандойОПрограммеПриToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.TextBox textBox8;
     }
 }
 
